@@ -1,36 +1,68 @@
 import React, {useState} from "react";
-import {View, StyleSheet, Text, Button, Keyboard, TouchableWithoutFeedback} from 'react-native';
+import {Button, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
 import Card from "../components/Card";
 import colors from "../constants/colors";
 import Input from "../components/input";
 
 const StartGameScreen = () => {
     const [enteredValue, setEnteredValue] = useState('');
+    const [confirmed, setConfirmed] = useState(false);
+    const [selectedNumber, setSelectedNumber] = useState();
 
     const numberInputHandler = inputText => {
         setEnteredValue(inputText.replace(/[^0-9]/g, ' '));
     }
+
+    const resetButtonHandler = () => {
+        setEnteredValue('');
+        setConfirmed(false);
+    }
+
+    const confirmButtonHandler = () => {
+        let chosenNumber = enteredValue;
+
+        if ( chosenNumber <= 0 || chosenNumber > 99 || chosenNumber === '')
+        {
+            return;
+        }
+        setConfirmed(true);
+        setEnteredValue('');
+        setSelectedNumber(chosenNumber);
+    }
+
+
+    let confirmedOutput;
+
+    if(confirmed)
+    {
+        confirmedOutput = <Text>Chosen number is: {selectedNumber} </Text>
+    }
+
+
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.screen}>
-            <Text style={styles.title}>Start a new game!</Text>
-            <Card style={styles.inputContainer}>
-                <Text>Select a number!</Text>
-                <Input stle={styles.input}
-                       blurOnSubmit
-                       autoCapitalize='none'
-                       autoCorrect={false}
-                       keyboardType="number-pad"
-                       maxLength={2}
-                       onChangeText={numberInputHandler}
-                       value={enteredValue}
-                />
-                <View style={styles.buttonContainer}>
-                    <Button style={styles.button} color={colors.secondary} title="Reset"/>
-                    <Button style={styles.button} color={colors.primary} title="Confirm"/>
-                </View>
-            </Card>
-        </View>
+            <View style={styles.screen}>
+                <Text style={styles.title}>Start a new game!</Text>
+                <Card style={styles.inputContainer}>
+                    <Text>Select a number!</Text>
+                    <Input stle={styles.input}
+                           blurOnSubmit
+                           autoCapitalize='none'
+                           autoCorrect={false}
+                           keyboardType="number-pad"
+                           maxLength={2}
+                           onChangeText={numberInputHandler}
+                           value={enteredValue}
+                    />
+                    <View style={styles.buttonContainer}>
+                        <Button style={styles.button} color={colors.secondary} title="Reset"
+                                onPress={resetButtonHandler}/>
+                        <Button style={styles.button} color={colors.primary} title="Confirm"
+                                onPress={confirmButtonHandler}/>
+                    </View>
+                </Card>
+                {confirmedOutput}
+            </View>
         </TouchableWithoutFeedback>
     );
 };
