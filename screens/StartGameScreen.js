@@ -1,13 +1,22 @@
-import React, {useState} from "react";
-import {Button, Keyboard, StyleSheet, Text, TouchableWithoutFeedback, View} from 'react-native';
-import Card from "../components/Card";
-import colors from "../constants/colors";
-import Input from "../components/input";
+import React, {useState} from 'react';
+import {
+    Button,
+    Keyboard,
+    StyleSheet,
+    Text,
+    TouchableWithoutFeedback,
+    View,
+    Alert,
+     } from 'react-native';
+import Card from '../components/Card';
+import colors from '../constants/colors';
+import Input from '../components/input';
 
 const StartGameScreen = () => {
     const [enteredValue, setEnteredValue] = useState('');
     const [confirmed, setConfirmed] = useState(false);
     const [selectedNumber, setSelectedNumber] = useState();
+    const [chosenNumberValid, setChosenNumberValid] = useState(false);
 
     const numberInputHandler = inputText => {
         setEnteredValue(inputText.replace(/[^0-9]/g, ' '));
@@ -21,19 +30,24 @@ const StartGameScreen = () => {
     const confirmButtonHandler = () => {
         let chosenNumber = enteredValue;
 
-        if ( chosenNumber <= 0 || chosenNumber > 99 || chosenNumber === '')
+        if ( isNaN(parseInt(chosenNumber)) ||  chosenNumber === '')
         {
-            return;
+            setChosenNumberValid(false);
+            Alert.alert("Not an ok number",
+                'Number must be between 1 and 99!',
+                [{text: 'Ok',style:'destructive',
+                    onPress:resetButtonHandler}]);
+
+        }else{
+            setChosenNumberValid(true);
+            setConfirmed(true);
+            setEnteredValue('');
+            setSelectedNumber(chosenNumber);
         }
-        setConfirmed(true);
-        setEnteredValue('');
-        setSelectedNumber(chosenNumber);
     }
 
-
     let confirmedOutput;
-
-    if(confirmed)
+    if(confirmed && chosenNumberValid)
     {
         confirmedOutput = <Text>Chosen number is: {selectedNumber} </Text>
     }
@@ -49,15 +63,15 @@ const StartGameScreen = () => {
                            blurOnSubmit
                            autoCapitalize='none'
                            autoCorrect={false}
-                           keyboardType="number-pad"
+                           keyboardType='number-pad'
                            maxLength={2}
                            onChangeText={numberInputHandler}
                            value={enteredValue}
                     />
                     <View style={styles.buttonContainer}>
-                        <Button style={styles.button} color={colors.secondary} title="Reset"
+                        <Button style={styles.button} color={colors.secondary} title='Reset'
                                 onPress={resetButtonHandler}/>
-                        <Button style={styles.button} color={colors.primary} title="Confirm"
+                        <Button style={styles.button} color={colors.primary} title='Confirm'
                                 onPress={confirmButtonHandler}/>
                     </View>
                 </Card>
