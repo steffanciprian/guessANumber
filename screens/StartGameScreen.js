@@ -33,7 +33,6 @@ const StartGameScreen = (props) => {
         let chosenNumber = enteredValue;
         Keyboard.dismiss()
 
-
         if (isNaN(parseInt(chosenNumber)) || chosenNumber === '' || parseInt(chosenNumber) === 0) {
             setEnteredValue('');
             setChosenNumberValid(false);
