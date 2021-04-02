@@ -7,10 +7,12 @@ import {
     TouchableWithoutFeedback,
     View,
     Alert,
-     } from 'react-native';
+} from 'react-native';
 import Card from '../components/Card';
 import colors from '../constants/colors';
 import Input from '../components/input';
+import NumberContainer from "../components/NumberContainer";
+
 
 const StartGameScreen = () => {
     const [enteredValue, setEnteredValue] = useState('');
@@ -29,29 +31,38 @@ const StartGameScreen = () => {
 
     const confirmButtonHandler = () => {
         let chosenNumber = enteredValue;
+        Keyboard.dismiss()
 
-        if ( isNaN(parseInt(chosenNumber)) ||  chosenNumber === '')
-        {
+
+        if (isNaN(parseInt(chosenNumber)) || chosenNumber === '' || parseInt(chosenNumber) === 0) {
+            setEnteredValue('');
             setChosenNumberValid(false);
             Alert.alert("Not an ok number",
                 'Number must be between 1 and 99!',
-                [{text: 'Ok',style:'destructive',
-                    onPress:resetButtonHandler}]);
+                [{
+                    text: 'Ok', style: 'destructive',
+                    onPress: resetButtonHandler
+                }]);
 
-        }else{
+        } else {
+            setEnteredValue('');
             setChosenNumberValid(true);
             setConfirmed(true);
-            setEnteredValue('');
             setSelectedNumber(chosenNumber);
         }
     }
 
     let confirmedOutput;
-    if(confirmed && chosenNumberValid)
-    {
-        confirmedOutput = <Text>Chosen number is: {selectedNumber} </Text>
+    if (confirmed && chosenNumberValid) {
+        confirmedOutput =
+            <Card style={styles.summaryContainer}>
+                <Text>You selected</Text>
+                <NumberContainer>
+                    {selectedNumber}
+                </NumberContainer>
+                <Button title={"START GAME"}/>
+            </Card>
     }
-
 
     return (
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -109,6 +120,12 @@ const styles = StyleSheet.create({
         width: 50,
         maxWidth: 40,
         textAlign: 'center'
+    },
+    summaryContainer: {
+        marginTop: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+
     }
 
 });
